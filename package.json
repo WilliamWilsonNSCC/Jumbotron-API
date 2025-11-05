@@ -5,12 +5,14 @@
   "license": "ISC",
   "author": "William Wilson",
   "type": "module",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mssql": "^12.1.0"
   }
 }
