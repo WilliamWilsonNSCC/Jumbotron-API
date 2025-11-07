@@ -1,23 +1,41 @@
 import express from 'express';
+import sql from 'mssql';
+import 'dotenv/config';
 
 const router = express.Router();
-
+const dbConnectionString = process.env.DB_CONNECTION_STRING;
 //Get: /api/events/
-app.get('/', (req, res) => {
-  const events = [
-    {id: 1, title: 'Concert', description:'Live concerts'},
-    {id: 2, title: 'Live Events', description:'Live events (sports, wrestling)'},
-    {id: 3, title: 'Social Events',description: 'Social events from comi-cons to job fairs'},
-  ];
+router.get('/', async (req, res) => {
 
-  res.json(events);
+  //create some sample events data
+  // const events = [
+  //   {id: '1', title: 'Concert', description:'Live concerts'},
+  //   {id: '2', title: 'Live Events', description:'Live events (sports, wrestling)'},
+  //   {id: '3', title: 'Social Events', description: 'Social events from comi-cons to job fairs'},
+  // ];
+
+  await sql.connect(dbConnectionString);
+  
+  const result = await sql.query`SELECT a.[ShowId], a.[Title], a.[Description], 
+  a.[Location], a.[Creator], a.[Filename], a.[Date], a.[CreateDate], b.[CategoryId], b.[Title]
+  from [dbo].[Show] a
+  INNER JOIN [dbo].[Category] b
+  ON a.[CategoryId] = b.[CategoryId]
+  ORDER BY a.[CreateDate] DESC`;
+
+  console.dir(result);
+
+
+  //return the results as json
+  res.json(result.recordset);
 });
 
 //Get: /api/events/:Id
-app.get('/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   const id = req.params.id;
-  //createa a sample photo object
-  const events = {id: id, title: title, description: description};
+
+  //create a sample photo object
+  const events = {id: id, title: 'title', description: 'description'};
 
   res.json(events);
 });
