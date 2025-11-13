@@ -12,13 +12,13 @@ router.get('/', async (req, res) => {
   await sql.connect(dbConnectionString);
   
   const result = await sql.query`SELECT a.[ShowId], a.[Title], a.[Description], 
-  a.[Location], a.[Creator], a.[Filename], a.[Date], a.[CreateDate], b.[CategoryId], b.[Title]
+  a.[Location], a.[Creator], a.[Filename], a.[Date], a.[Date], b.[CategoryId], b.[Title]
   from [dbo].[Show] a
   INNER JOIN [dbo].[Category] b
   ON a.[CategoryId] = b.[CategoryId]
-  ORDER BY a.[CreateDate] DESC`;
+  ORDER BY a.[Date] ASC`;
 
-  console.dir(result);
+  // console.dir(result);
 
 
   //return the results as json
