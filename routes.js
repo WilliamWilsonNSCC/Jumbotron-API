@@ -3,16 +3,11 @@ import sql from 'mssql';
 import 'dotenv/config';
 
 const router = express.Router();
+
 const dbConnectionString = process.env.DB_CONNECTION_STRING;
+
 //Get: /api/events/
 router.get('/', async (req, res) => {
-
-  //create some sample events data
-  // const events = [
-  //   {id: '1', title: 'Concert', description:'Live concerts'},
-  //   {id: '2', title: 'Live Events', description:'Live events (sports, wrestling)'},
-  //   {id: '3', title: 'Social Events', description: 'Social events from comi-cons to job fairs'},
-  // ];
 
   await sql.connect(dbConnectionString);
   
