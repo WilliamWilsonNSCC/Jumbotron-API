@@ -9,9 +9,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app,use(cors());
+app.use(cors());
 
-app.use('/api/events', router);
+app.use('/api/shows', router);
 
 //Server starting
 app.listen(port, () => {
