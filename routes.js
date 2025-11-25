@@ -9,7 +9,7 @@ const dbConnectionString = process.env.DB_CONNECTION_STRING;
 
 router.use(cors());
 
-//Get: /api/events/
+//Get: /api/shows/
 router.get('/', async (req, res) => {
 
   await sql.connect(dbConnectionString);
