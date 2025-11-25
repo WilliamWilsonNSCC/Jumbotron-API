@@ -2,7 +2,7 @@ import express from 'express';
 import router from './routes.js';
 import cors from 'cors';
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5173;
 const app = express();
 
 //Middleware
