@@ -33,24 +33,35 @@ router.get('/:id', async (req, res) => {
   
   const id = req.params.id;
 
+  if(isNaN(id)) {
+    res.status(400).send('Invalid photo ID.');
+    return;
+  }
+
   await sql.connect(dbConnectionString);
     
-    const result = await sql.query`SELECT a.[ShowId], a.[Title], a.[Description], 
-    a.[Location], a.[Creator], a.[Filename], a.[Date], a.[CreateDate], 
-    b.[CategoryId], b.[Title] as CategoryTitle
-    FROM [dbo].[Show] a
-    INNER JOIN [dbo].[Category] b
-    ON a.[CategoryId] = b.[CategoryId]
-    WHERE a.[ShowId] = ${id}`;
+  const result = await sql.query`SELECT a.[ShowId], a.[Title], a.[Description], 
+  a.[Location], a.[Creator], a.[Filename], a.[Date], a.[CreateDate], 
+  b.[CategoryId], b.[Title] as CategoryTitle
+  FROM [dbo].[Show] a
+  INNER JOIN [dbo].[Category] b
+  ON a.[CategoryId] = b.[CategoryId]
+  WHERE a.[ShowId] = ${id}`;
 
 
-  res.json(result.recordset[0]);
+  // return the results as json
+  if(result.recordset.length === 0) {
+    res.status(404).json({ message: 'Photo not found.'});        
+  }
+  else {
+    res.json(result.recordset[0]); // only return the first row (should always be the case)
+  }
 });
 
 router.post('/:id/purchases', async (req, res) => {
 
     const showId = parseInt(req.params.id);
-    const { ticketSales, name, email, paymentType, cardNumber, cvv, expirationDate } = req.body;
+    const { ticketSales, name, email, paymentType, cardNumber, cvv} = req.body;
 
     await sql.connect(dbConnectionString);
 
@@ -58,7 +69,7 @@ router.post('/:id/purchases', async (req, res) => {
       INSERT INTO [dbo].[Purchase] 
       (ShowId, TicketSales, Name, Email, PaymentType, CardNumber, CVV)
       VALUES 
-      (${showId}, ${ticketSales}, ${name}, ${email}, ${paymentType}, ${''}, ${null})
+      (${showId}, ${ticketSales}, ${name}, ${email}, ${paymentType}, ${cardNumber}, ${cvv})
       SELECT SCOPE_IDENTITY() AS PurchaseId`;
     
     const purchaseId = result.recordset[0].PurchaseId;
@@ -69,7 +80,10 @@ router.post('/:id/purchases', async (req, res) => {
       showId: showId,
       ticketSales: ticketSales,
       name: name,
-      email: email
+      email: email,
+      paymentType: paymentType,
+      cardNumber: cardNumber,
+      cvv: cvv
     });
 
 });
